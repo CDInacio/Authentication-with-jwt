@@ -17,7 +17,7 @@ const Add = () => {
           <input
             type="text"
             placeholder="Adicione uma terefa"
-            className="w-full rounded-sm px-3 py-1 bg-neutral-200 focus:bg-neutral-300  duration-300"
+            className="w-full rounded-md px-3 py-1 border-[2px] border-neutral-300 bg-background  duration-300"
           />
         </div>
       ) : null}

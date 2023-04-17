@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
 
@@ -8,8 +8,13 @@ interface Props {
 }
 
 const PrivateRoute = ({ children }: Props) => {
-  const { user } = useContext(AuthContext);
-  if (!user) return <Navigate to="/auth" />;
+  const navigate = useNavigate();
+  const { state } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!state.user) navigate("/login");
+  }, [state.user]);
+
   return <>{children}</>;
 };
 
