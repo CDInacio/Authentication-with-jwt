@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import { AuthContext } from "../../context/AuthContext";
-import useToggle from "../hooks/use-toggle";
+import useToggle from "../../hooks/use-toggle";
 import { signupSchema } from "./yupSchemas";
 
 type FormData = yup.InferType<typeof signupSchema>;
@@ -16,7 +16,7 @@ const inputStl = "border-[1px] w-full  px-3 py-2 rounded-md mb-5 duration-300";
 
 const Signupform = () => {
   const navigate = useNavigate();
-  const { state, signup } = useContext(AuthContext);
+  const { user, signup } = useContext(AuthContext);
   const [error, setError] = useState("");
   const {
     handleToggleConfPass,
@@ -47,10 +47,10 @@ const Signupform = () => {
       password: data.password,
     };
 
-    const res = await signup(credentials);
+    const response = await signup(credentials);
 
-    if (res.status !== 200) {
-      setError(res.data.message);
+    if (response.status !== 200) {
+      setError(response.data.message);
       return;
     }
 
@@ -127,10 +127,7 @@ const Signupform = () => {
         </div>
         <p className="text-red-400">{errors.confirmPassword?.message}</p>
         <button
-          disabled={state.isLoading ? true : false}
-          className={` ${
-            state.isLoading ? "bg-sky-200" : "bg-sky-400"
-          } p-3 rounded-md text-white cursor-pointer hover:bg-sky-500 duration-300`}
+          className={` ${"bg-sky-400"} p-3 rounded-md text-white cursor-pointer hover:bg-sky-500 duration-300`}
           type="submit"
         >
           Enviar
