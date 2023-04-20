@@ -6,19 +6,23 @@ export interface SignupCredentials {
   password: string;
 }
 
+interface IUser {
+  isAuth: boolean;
+  name: string;
+  email: string;
+}
+
 export interface LoginCredentials {
   email: string;
   password: string;
 }
 
 export interface StateProps {
-  user: string;
   isLoading: boolean;
 }
 
 export interface AuthContextType {
-  state: StateProps;
-  setState: Dispatch<SetStateAction<StateProps>>;
+  user: IUser;
   signup: (credentials: SignupCredentials) => void;
   login: (credentials: LoginCredentials) => void;
   logout: () => void;
