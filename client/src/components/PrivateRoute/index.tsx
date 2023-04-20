@@ -9,11 +9,11 @@ interface Props {
 
 const PrivateRoute = ({ children }: Props) => {
   const navigate = useNavigate();
-  const { state } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!state.user) navigate("/login");
-  }, [state.user]);
+    if (!user.isAuth) navigate("/login");
+  }, [user]);
 
   return <>{children}</>;
 };
