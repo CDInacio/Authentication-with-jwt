@@ -25,9 +25,9 @@ export const signupSchema = yup
             .string()
             .required("Campo obrigatório")
             .min(8, "A senha precisa ter no mínimo 8 caracteres"),
-        confirmPassword: yup
-            .string()
-            .required("Campo obrigatório")
-            .oneOf([yup.ref("password")], "Senhas diferentes"),
+        // confirmPassword: yup
+        //     .string()
+        //     .required("Campo obrigatório")
+        //     .oneOf([yup.ref("password")], "Senhas diferentes"),
     })
     .required();

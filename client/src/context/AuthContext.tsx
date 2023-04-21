@@ -1,5 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 
+import axios from "axios";
+
 import {
   AuthContextType,
   LoginCredentials,
@@ -8,61 +10,92 @@ import {
 import { api } from "../services/api";
 
 export const AuthContext = createContext<AuthContextType>({
-  state: {
-    user: "",
-    isLoading: false,
+  user: {
+    isAuth: false,
+    name: "",
+    email: "",
   },
-  setState: () => {},
-  signup: (credentials: SignupCredentials) => {},
-  login: (credentials: LoginCredentials) => {},
+  setUser: () => {},
+  signup: () => {},
+  login: () => {},
   logout: () => {},
+  error: "",
+  setError: () => {},
 });
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [state, setState] = useState({
-    user: "",
-    isLoading: false,
+  const [user, setUser] = useState({
+    isAuth: false,
+    name: "",
+    email: "",
   });
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setState((prev) => ({ ...prev, user: user }));
-      return;
-    }
-  }, [state.user]);
+  const [error, setError] = useState("");
 
-  const signup = async (credentials: SignupCredentials): Promise<any> => {
+  useEffect(() => {
+    getLoggedUserInfo();
+  }, []);
+
+  const signup = async (credentials: SignupCredentials) => {
     try {
-      const data = await api.post("/user/signup", credentials);
-      return data;
+      const response = await api.post("/user/signup", credentials);
+      return response;
     } catch (error) {
-      return error?.response;
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.message);
+      }
     }
   };
 
-  const login = async (credentials: LoginCredentials): Promise<any> => {
+  const login = async (credentials: LoginCredentials) => {
     try {
-      const data = await api.post("/user/login", credentials);
-      if (data.status === 200) {
-        localStorage.setItem("user", data.data.email);
-        setState((prev) => ({ ...prev, user: data.data.email }));
-        return data;
-      }
+      const response = await api.post("/user/login", credentials);
+
+      localStorage.setItem("userToken", JSON.stringify(response.data.token));
+
+      setUser({
+        isAuth: true,
+        name: response.data.user.name,
+        email: response.data.user.email,
+      });
     } catch (error) {
-      return error?.response;
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.message);
+      }
+    }
+  };
+
+  const getLoggedUserInfo = async () => {
+    const token = localStorage.getItem("userToken");
+
+    let config = {
+      headers: {
+        authorization: `Bearer ${JSON.parse(token!)}`,
+      },
+    };
+
+    if (token) {
+      const response = await api.get("/user", config);
+
+      setUser({
+        isAuth: true,
+        name: response.data.name,
+        email: response.data.email,
+      });
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
-    setState((prev) => ({ ...prev, user: "" }));
+    localStorage.removeItem("userToken");
+    setUser({ isAuth: false, name: "", email: "" });
   };
 
   return (
-    <AuthContext.Provider value={{ state, setState, signup, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, error, setError, setUser, signup, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

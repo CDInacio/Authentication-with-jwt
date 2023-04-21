@@ -8,7 +8,6 @@ import { userRoutes } from './routes/user'
 import { dbConnection } from './config/db';
 
 dbConnection();
-
 app.use(cors());
 
 app.use(express.json());

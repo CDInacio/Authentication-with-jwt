@@ -13,7 +13,7 @@ const PrivateRoute = ({ children }: Props) => {
 
   useEffect(() => {
     if (!user.isAuth) navigate("/login");
-  }, [user]);
+  }, [user.isAuth]);
 
   return <>{children}</>;
 };

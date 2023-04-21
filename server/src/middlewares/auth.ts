@@ -12,7 +12,7 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
 
     const token = authorization.split(' ')[1]
 
-    const { id } = jwt.verify(token, 'anicetokenkey') as JwtPayload
+    const { id } = jwt.verify(token, process.env.JWT_KEY!) as JwtPayload
 
     const user = await User.findById({ _id: id })
 

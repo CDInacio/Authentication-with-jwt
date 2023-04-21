@@ -1,29 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { TextField, Paper, Button, Typography, Container } from "@mui/material";
 import * as yup from "yup";
 
 import { AuthContext } from "../../context/AuthContext";
-import useToggle from "../../hooks/use-toggle";
+import BottomMessage from "../BottomMessage";
+import AlertMessage from "../Feedback/AlertMessage";
 import { signupSchema } from "./yupSchemas";
 
 type FormData = yup.InferType<typeof signupSchema>;
 
-const inputStl = "border-[1px] w-full  px-3 py-2 rounded-md mb-5 duration-300";
-
 const Signupform = () => {
   const navigate = useNavigate();
-  const { user, signup } = useContext(AuthContext);
-  const [error, setError] = useState("");
-  const {
-    handleToggleConfPass,
-    handleTogglePass,
-    toggleConfPass,
-    togglePassword,
-  } = useToggle();
+  const { signup, error, setError } = useContext(AuthContext);
 
   const handleNavigate = (to: string) => {
     navigate("/" + to);
@@ -39,7 +31,6 @@ const Signupform = () => {
 
   const onSubmit = async (data: FormData) => {
     reset();
-    setError("");
 
     const credentials = {
       name: data.fullname,
@@ -48,102 +39,87 @@ const Signupform = () => {
     };
 
     const response = await signup(credentials);
-
-    if (response.status !== 200) {
-      setError(response.data.message);
-      return;
-    }
-
-    navigate("/login");
+    if (response.status === 200) navigate("/login");
   };
 
-  return (
-    <div className="bg-card shadow-md rounded-md p-5 w-[500px]">
-      <h2 className="mb-5 font-bold text-2xl text-[#0f4c5c] text-center">
-        CADASTRO{" "}
-      </h2>
+  useEffect(() => {
+    setError("");
+  }, [error]);
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col ">
-        <input
-          type="text"
-          className={`${inputStl} ${
-            errors.email && "border-[1px] border-red-400"
-          }`}
-          placeholder="Nome completo"
-          {...register("fullname")}
-        />
-        <p className="text-red-400">{errors.fullname?.message}</p>
-        <input
-          type="text"
-          className={`${inputStl} ${
-            errors.email && "border-[1px] border-red-400"
-          }`}
-          placeholder="Email"
-          {...register("email")}
-        />
-        <p className="text-red-400">{errors.email?.message}</p>
-        <div className="relative">
-          <input
-            type={togglePassword ? "text" : "password"}
-            className={`${inputStl} ${
-              errors.password && "border-[1px] border-red-400"
-            }`}
-            placeholder="Senha"
-            {...register("password")}
+  return (
+    <Container
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <Paper
+        variant="outlined"
+        sx={{
+          width: 550,
+          marginX: "auto",
+          paddingX: "50px",
+          paddingY: "50px",
+        }}
+      >
+        {error && (
+          <AlertMessage message={error} color="error" severity="error" />
+        )}
+        <Typography variant="h5" mb={5} sx={{ fontWeight: "bold" }}>
+          CADASTRO
+        </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <TextField
+              fullWidth
+              sx={{ mb: 3 }}
+              error={!!errors.fullname?.message}
+              helperText={errors.fullname?.message}
+              id="outlined-basic"
+              label="Nome completo"
+              variant="outlined"
+              {...register("fullname")}
+            />
+          </div>
+          <div>
+            <TextField
+              fullWidth
+              sx={{ mb: 3 }}
+              error={!!errors.email?.message}
+              helperText={errors.email?.message}
+              id="outlined-basic"
+              label="Email"
+              variant="outlined"
+              {...register("email")}
+            />
+          </div>
+          <div>
+            {" "}
+            <TextField
+              fullWidth
+              sx={{ mb: 3 }}
+              error={!!errors.password?.message}
+              helperText={errors.password?.message}
+              id="outlined-basic"
+              label="Senha"
+              variant="outlined"
+              {...register("password")}
+            />
+          </div>
+          <Button fullWidth sx={{ mb: 3 }} variant="contained" type="submit">
+            Enviar
+          </Button>
+
+          <BottomMessage
+            text="Já possui uma conta?"
+            subtext="Entre aqui"
+            handleNavigate={handleNavigate}
+            path="login"
           />
-          {togglePassword ? (
-            <IoMdEye
-              onClick={handleTogglePass}
-              className="absolute right-5 top-[24%] cursor-pointer"
-            />
-          ) : (
-            <IoMdEyeOff
-              onClick={handleTogglePass}
-              className="absolute right-5 top-[24%] cursor-pointer"
-            />
-          )}
-        </div>
-        <p className="text-red-400">{errors.password?.message}</p>
-        <div className="relative">
-          <input
-            type={toggleConfPass ? "text" : "password"}
-            className={`${inputStl} ${
-              errors.password && "border-[1px] border-red-400"
-            }`}
-            placeholder="Confirmar senha"
-            {...register("confirmPassword")}
-          />
-          {toggleConfPass ? (
-            <IoMdEye
-              onClick={handleToggleConfPass}
-              className="absolute right-5 top-[24%] cursor-pointer"
-            />
-          ) : (
-            <IoMdEyeOff
-              onClick={handleToggleConfPass}
-              className="absolute right-5 top-[24%] cursor-pointer"
-            />
-          )}
-        </div>
-        <p className="text-red-400">{errors.confirmPassword?.message}</p>
-        <button
-          className={` ${"bg-sky-400"} p-3 rounded-md text-white cursor-pointer hover:bg-sky-500 duration-300`}
-          type="submit"
-        >
-          Enviar
-        </button>
-        <p className="text-center mt-3">
-          Já possui uma conta?
-          <span
-            onClick={() => handleNavigate("login")}
-            className="ml-1 font-bold cursor-pointer"
-          >
-            Entre
-          </span>
-        </p>
-      </form>
-      {error && <p className="text-center text-red-400 mt-5">{error}</p>}
-    </div>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 

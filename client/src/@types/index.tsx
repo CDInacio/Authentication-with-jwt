@@ -1,12 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
-
 export interface SignupCredentials {
   name: string;
   email: string;
   password: string;
 }
 
-interface IUser {
+export interface IUser {
   isAuth: boolean;
   name: string;
   email: string;
@@ -23,6 +21,9 @@ export interface StateProps {
 
 export interface AuthContextType {
   user: IUser;
+  error: string;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
+  setError: React.Dispatch<React.SetStateAction<string>>;
   signup: (credentials: SignupCredentials) => void;
   login: (credentials: LoginCredentials) => void;
   logout: () => void;

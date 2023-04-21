@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 
 const useToggle = () => {
-  const [togglePassword, setTogglePassword] = useState(false);
-  const [toggleConfPass, setToggleConfPass] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleTogglePass = () => {
-    setTogglePassword((prev) => !prev);
+    setShowPassword((prev) => !prev);
   };
 
-  const handleToggleConfPass = () => {
-    setToggleConfPass((prev) => !prev);
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
   };
 
   return {
-    togglePassword,
-    toggleConfPass,
-    handleToggleConfPass,
+    showPassword,
     handleTogglePass,
+    handleMouseDownPassword,
   };
 };
 

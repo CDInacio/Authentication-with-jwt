@@ -1,27 +1,29 @@
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Add from "./components/Add";
-import Kanban from "./components/Kanban/Kanban";
-import { AuthContext } from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
-function App() {
-  const navigate = useNavigate();
-  const { state, logout } = useContext(AuthContext);
-
-  const handleNavigate = (to: string) => {
-    navigate("/" + to);
-  };
-  
+const App = () => {
   return (
     <>
-      <p onClick={() => handleNavigate("login")}>login</p>
-      <p onClick={() => handleNavigate("cadastro")}>casdastro</p>
-      <Add />
-      <Kanban />
-      <p onClick={logout}>logout</p>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Signup />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
-}
+};
 
 export default App;

@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 
-export class UserController {
+export class AuthController {
   async signup(req: Request, res: Response) {
     const { name, email, password } = req.body;
 
@@ -14,7 +14,7 @@ export class UserController {
       let user = await User.findOne({ email: email });
 
       if (user)
-        return res.status(400).send({ message: "Email já em uso, por favor informe outro." });
+        return res.status(400).send({ message: "Usuário já cadastrado." });
 
       user = new User({
         fullname: name,
@@ -35,14 +35,14 @@ export class UserController {
     try {
       const user = await User.findOne({ email: email });
       if (!user)
-        return res.status(400).send({ message: "Usuário não cadastrado!" });
+        return res.status(400).send({ message: "Email ou senha incorretos!" });
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch)
         return res.status(400).send({ message: "Email ou senha incorretos!" });
 
-      const token = jwt.sign({ id: user.id }, 'anicetokenkey', {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_KEY!, {
         expiresIn: '1d'
       })
 
