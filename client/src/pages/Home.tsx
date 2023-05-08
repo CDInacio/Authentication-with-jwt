@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
-import { AppBar, Toolbar, Button, Typography, Container } from "@mui/material";
-
+import Container from "../components/ui/Layout/Container";
+import Modal from "../components/ui/Modal";
 import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
@@ -9,19 +9,13 @@ const Home = () => {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography sx={{ fontWeight: "bold" }}>MY AUTH APP</Typography>
-          <Button onClick={logout} sx={{ color: "#fff" }}>
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Container>
-        <Typography variant="h6" sx={{ mt: 10 }}>
-          Seja Bem-vindo à sua home page, {user.name.split(" ")[0]}
-        </Typography>
-      </Container>
+      <nav className="w-screen h-[60px] text-white bg-dark shadow-md flex items-center justify-center">
+        <Container className="flex justify-between">
+          <p>Quadro Kanban</p>
+          <Modal />
+        </Container>
+      </nav>
+      <Container className="bg-veryDark h-full ">dasd</Container>
     </>
   );
 };

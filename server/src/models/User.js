@@ -1,15 +1,8 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 const { Schema } = mongoose;
+import bcrypt from "bcrypt";
 
-const bcrypt = require("bcryptjs");
-
-interface Iuser {
-  fullname: string,
-  email: string,
-  password: string
-}
-
-export const UserSchema = new Schema<Iuser>(
+export const UserSchema = new Schema(
   {
     fullname: {
       type: String,
@@ -34,5 +27,4 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-export const User = mongoose.model("users", UserSchema);
-
+export const User = mongoose.model("User", UserSchema);

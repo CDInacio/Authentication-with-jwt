@@ -8,6 +8,8 @@ export interface IUser {
   isAuth: boolean;
   name: string;
   email: string;
+  msg: string;
+  status: number;
 }
 
 export interface LoginCredentials {
@@ -21,9 +23,7 @@ export interface StateProps {
 
 export interface AuthContextType {
   user: IUser;
-  error: string;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
-  setError: React.Dispatch<React.SetStateAction<string>>;
   signup: (credentials: SignupCredentials) => void;
   login: (credentials: LoginCredentials) => void;
   logout: () => void;

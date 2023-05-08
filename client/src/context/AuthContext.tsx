@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 
 import axios from "axios";
+import { number } from "yup";
 
 import {
   AuthContextType,
@@ -14,13 +15,13 @@ export const AuthContext = createContext<AuthContextType>({
     isAuth: false,
     name: "",
     email: "",
+    msg: "",
+    status: 401,
   },
   setUser: () => {},
   signup: () => {},
   login: () => {},
   logout: () => {},
-  error: "",
-  setError: () => {},
 });
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -30,41 +31,53 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
     isAuth: false,
     name: "",
     email: "",
+    msg: "",
+    status: 401,
   });
-
-  const [error, setError] = useState("");
 
   useEffect(() => {
     getLoggedUserInfo();
   }, []);
 
-  const signup = async (credentials: SignupCredentials) => {
-    try {
-      const response = await api.post("/user/signup", credentials);
-      return response;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data.message);
-      }
-    }
+  const signup = (credentials: SignupCredentials) => {
+    api
+      .post("/user/signup", credentials)
+      .then((response) => {
+        setUser((prev) => ({
+          ...prev,
+          msg: response.data.message,
+          status: response.status,
+        }));
+      })
+      .catch((error) => {
+        setUser((prev) => ({
+          ...prev,
+          msg: error.response.data.message,
+          status: error.response.status,
+        }));
+      });
   };
 
-  const login = async (credentials: LoginCredentials) => {
-    try {
-      const response = await api.post("/user/login", credentials);
+  const login = (credentials: LoginCredentials) => {
+    api
+      .post("/user/login", credentials)
+      .then((response) => {
+        localStorage.setItem("userToken", JSON.stringify(response.data.token));
 
-      localStorage.setItem("userToken", JSON.stringify(response.data.token));
-
-      setUser({
-        isAuth: true,
-        name: response.data.user.name,
-        email: response.data.user.email,
+        setUser((prev) => ({
+          ...prev,
+          isAuth: true,
+          name: response.data.user.name,
+          email: response.data.user.email,
+        }));
+      })
+      .catch((error) => {
+        setUser((prev) => ({
+          ...prev,
+          msg: error.response.data.message,
+          status: error.response.status,
+        }));
       });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data.message);
-      }
-    }
   };
 
   const getLoggedUserInfo = async () => {
@@ -79,23 +92,22 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
     if (token) {
       const response = await api.get("/user", config);
 
-      setUser({
+      setUser((prev) => ({
+        ...prev,
         isAuth: true,
         name: response.data.name,
         email: response.data.email,
-      });
+      }));
     }
   };
 
   const logout = () => {
     localStorage.removeItem("userToken");
-    setUser({ isAuth: false, name: "", email: "" });
+    setUser((prev) => ({ ...prev, isAuth: false, name: "", email: "" }));
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, error, setError, setUser, signup, login, logout }}
-    >
+    <AuthContext.Provider value={{ user, setUser, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
