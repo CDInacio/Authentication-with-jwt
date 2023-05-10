@@ -1,5 +1,3 @@
-import React from "react";
-
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -8,7 +6,7 @@ const Modal = () => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <span className="bg-purlpe cursor-pointer hover:bg-darkPurple duration-300 h-[35px] px-[16px] rounded-md flex items-center justify-center">
+        <span className="bg-primary-500 cursor-pointer hover:bg-primary-600 duration-300 h-[35px] px-[16px] rounded-md flex items-center justify-center">
           <FontAwesomeIcon icon={faPlus} />
           <button className="ml-[5px]">Adicionar</button>
         </span>

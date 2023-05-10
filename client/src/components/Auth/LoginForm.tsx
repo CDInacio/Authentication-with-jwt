@@ -50,12 +50,15 @@ const Loginform = () => {
         <div className="relative flex items-center w-3/5">
           <img src="/images/login.jpg" className="object-cover brightness-75" />
           <div className="absolute left-0 right-0 flex flex-col items-center justify-center h-full mx-auto text-white">
-            <h2 className="text-2xl">Nov aqui?</h2>
+            <h2 className="text-2xl">Novo aqui?</h2>
             <p className="text-center w-[80%] drop-shadow-sm text-sm">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi,
               ab?
             </p>
-            <button className="mt-[100px] px-[20px] h-[36px] rounded-md border-2 border-white">
+            <button
+              onClick={() => navigate("/cadastro")}
+              className="mt-[100px] px-[20px] h-[36px] rounded-md border-2 border-white"
+            >
               Criar conta
             </button>
           </div>
@@ -65,7 +68,10 @@ const Loginform = () => {
             <Alert intent="danger" className="mb-[20px]">
               {user.msg}
             </Alert>
-          )}
+          )}{" "}
+          <h2 className="text-3xl font-medium text-neutral-800 mb-[30px]">
+            Login
+          </h2>
           <Form.Root onSubmit={handleSubmit(onSubmit)} className=" ">
             <Form.Field className="grid mb-[10px]" name="email">
               <div className="flex items-baseline justify-between">
@@ -106,7 +112,7 @@ const Loginform = () => {
               </Form.Control>
             </Form.Field>
             <Form.Submit asChild>
-              <button className="box-border w-full  shadow-blackA7 hover:bg-darkPurple inline-flex h-[35px] items-center justify-center rounded-[4px] bg-purlpe text-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]">
+              <button className="box-border w-full  shadow-blackA7 hover:bg-primary-600  duration-300 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-primary-500 text-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]">
                 Entrar
               </button>
             </Form.Submit>
