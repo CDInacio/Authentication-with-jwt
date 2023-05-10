@@ -10,7 +10,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <Container className="bg-veryDark h-full ">dasd</Container>
+      <Container className="bg-veryDark h-full "></Container>
     </>
   );
 };
