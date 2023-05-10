@@ -50,7 +50,7 @@ const Loginform = () => {
         <div className="relative flex items-center w-3/5">
           <img src="/images/login.jpg" className="object-cover brightness-75" />
           <div className="absolute left-0 right-0 flex flex-col items-center justify-center h-full mx-auto text-white">
-            <h2 className="text-2xl">Novo aqui?</h2>
+            <h2 className="text-2xl">Nov aqui?</h2>
             <p className="text-center w-[80%] drop-shadow-sm text-sm">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi,
               ab?
