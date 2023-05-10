@@ -8,7 +8,7 @@ import "./index.css";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <AuthContextProvider>
-      <p>tedste</p>
+      <p></p>
       <App />
     </AuthContextProvider>
   </React.StrictMode>
