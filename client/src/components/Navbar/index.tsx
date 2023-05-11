@@ -6,7 +6,7 @@ import * as Popover from "@radix-ui/react-popover";
 
 import { AuthContext } from "../../context/AuthContext";
 import Container from "../ui/Layout/Container";
-import Modal from "../ui/Modal";
+import ModalTaskForm from "../ui/Modal/ModalTaskForm";
 
 const Navbar = () => {
   const { logout } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const Navbar = () => {
       <Container className="flex justify-between">
         <p>Quadro Kanban</p>
         <div className="flex items-center">
-          <Modal />
+          <ModalTaskForm />
           <Popover.Root>
             <Popover.Trigger asChild>
               <button

@@ -31,3 +31,9 @@ export const signupSchema = yup
         //     .oneOf([yup.ref("password")], "Senhas diferentes"),
     })
     .required();
+
+export const taskSchema = yup.object({
+    title: yup.string().required('Campo obrigatório'),
+    description: yup.string().required('Campo obrigatório'),
+    status: yup.string().required('Campo obrigatório')
+})

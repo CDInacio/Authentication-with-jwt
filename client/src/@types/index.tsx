@@ -28,3 +28,21 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials) => void;
   logout: () => void;
 }
+
+export interface ITask {
+  title: string;
+  description: string;
+  status: string;
+}
+
+export interface ITaskResponse {
+  author: {
+    email: string;
+    fullname: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  description: string;
+  status: string;
+}
