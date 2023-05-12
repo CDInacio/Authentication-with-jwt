@@ -8,11 +8,9 @@ export const isAuth = async (req, res, next) => {
 
   const token = authorization.split(" ")[1];
 
-  console.log(token);
   const { id } = jwt.verify(token, process.env.JWT_KEY);
 
   const user = await User.findById({ _id: id });
-  console.log(user);
   if (!user) return res.status(401).send({ message: "Usuário encontrado." });
 
   const loggedUser = {

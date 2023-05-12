@@ -1,17 +1,21 @@
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
-import { faChevronDown, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Select from "@radix-ui/react-select";
 
 import { ITask } from "../../../@types";
 import { privateRequest } from "../../../services/api";
+import Alert from "../Alert/Alert";
+import Button from "../Button/Button";
 import SelectItem from "../Select/SelectItem";
 
 interface Props {
   isEditMode?: boolean;
+  isOpen: boolean;
+  onShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Task {
@@ -20,11 +24,14 @@ interface Task {
   status: string;
 }
 
-async function addTask(task: Task): Promise<void> {
-  const data = privateRequest.post("/task/add", task);
+function addTask(task: Task): Promise<void> {
+  return privateRequest.post("/task/add", task);
 }
 
-const Form = ({ isEditMode }: Props) => {
+const CreateAndEditModal = ({ isEditMode, isOpen, onShow }: Props) => {
+  const queryClient = useQueryClient();
+
+  const [showConfirm, setShowConfirm] = useState(false);
   const [task, setTask] = useState<ITask>({
     title: "",
     description: "",
@@ -36,22 +43,35 @@ const Form = ({ isEditMode }: Props) => {
   //   //TODO
   // }
 
-  const { mutate, isLoading } = useMutation(addTask);
+  const { mutate, isLoading } = useMutation(addTask, {
+    onSuccess: () => {
+      onShow((prev) => !prev);
+
+      Promise.all([
+        (queryClient.invalidateQueries(["todo-tasks"]),
+        queryClient.invalidateQueries(["doing-tasks"])),
+      ]);
+    },
+  });
 
   const handleAddTask = () => {
     if (!task.title || !task.description || !task.status) return;
-    console.log("na funcao");
     mutate(task);
   };
 
+  const handleCloseModal = () => {
+    if (task.title || task.description || task.status) {
+      setShowConfirm(true);
+      return;
+    }
+    onShow((prev) => !prev);
+  };
+
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <span className="bg-primary-500 cursor-pointer hover:bg-primary-600 duration-300 h-[35px] px-[16px] rounded-md flex items-center justify-center">
-          <FontAwesomeIcon icon={faPlus} />
-          <button className="ml-[5px]">Adicionar</button>
-        </span>
-      </Dialog.Trigger>
+    <Dialog.Root open={isOpen}>
+      {/* <Dialog.Trigger asChild>
+        
+      </Dialog.Trigger> */}
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-dark p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
@@ -132,20 +152,26 @@ const Form = ({ isEditMode }: Props) => {
             </Select.Root>
           </div>
           <div className="mt-[25px] flex justify-end">
-            <Dialog.Close asChild>
-              <button
-                onClick={handleAddTask}
-                type="submit"
-                className="bg-primary-500 text-white hover:bg-primary-600 duration-300 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-              >
-                Salvar
-              </button>
-            </Dialog.Close>
+            <div className="flex">
+              <Button className="mr-[10px]" onClick={handleCloseModal}>
+                Cancelar
+              </Button>
+              <Button onClick={handleAddTask}>Salvar</Button>
+            </div>
           </div>
+          {showConfirm && (
+            <Alert
+              title="Opa"
+              description="Tem certeza que deseja cancelar?"
+              onShow={onShow}
+              onConfirm={setShowConfirm}
+              isOpen={showConfirm}
+            />
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
 };
 
-export default Form;
+export default CreateAndEditModal;

@@ -1,21 +1,27 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Popover from "@radix-ui/react-popover";
 
 import { AuthContext } from "../../context/AuthContext";
+import Button from "../ui/Button/Button";
 import Container from "../ui/Layout/Container";
-import ModalTaskForm from "../ui/Modal/ModalTaskForm";
+import CreateAndEditModal from "../ui/Modals/CreateAndEditModal";
 
 const Navbar = () => {
+  const [showModal, setShowModal] = useState(false);
   const { logout } = useContext(AuthContext);
+
   return (
     <nav className="w-screen h-[60px] text-white bg-dark shadow-md flex items-center justify-center">
       <Container className="flex justify-between">
         <p>Quadro Kanban</p>
         <div className="flex items-center">
-          <ModalTaskForm />
+          <CreateAndEditModal onShow={setShowModal} isOpen={showModal} />
+          <Button icon={faPlus} onClick={() => setShowModal((prev) => !prev)}>
+            Adicionar
+          </Button>
           <Popover.Root>
             <Popover.Trigger asChild>
               <button
