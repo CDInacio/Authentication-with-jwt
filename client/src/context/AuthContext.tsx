@@ -8,7 +8,7 @@ import {
   LoginCredentials,
   SignupCredentials,
 } from "../@types";
-import { api } from "../services/api";
+import { api, privateRequest } from "../services/api";
 
 export const AuthContext = createContext<AuthContextType>({
   user: {
@@ -83,14 +83,8 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const getLoggedUserInfo = async () => {
     const token = localStorage.getItem("userToken");
 
-    let config = {
-      headers: {
-        authorization: `Bearer ${JSON.parse(token!)}`,
-      },
-    };
-
     if (token) {
-      const response = await api.get("/user", config);
+      const response = await privateRequest.get("/user");
 
       setUser((prev) => ({
         ...prev,

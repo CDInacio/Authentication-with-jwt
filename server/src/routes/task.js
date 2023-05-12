@@ -4,5 +4,5 @@ import { isAuth } from "../middlewares/auth.js";
 
 export const taskRoutes = Router();
 
-taskRoutes.get("/", new TaskController().getTasks);
+taskRoutes.get("/", isAuth, new TaskController().getTasks);
 taskRoutes.post("/add", isAuth, new TaskController().postTask);

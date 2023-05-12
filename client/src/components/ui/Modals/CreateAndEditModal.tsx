@@ -7,7 +7,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as Select from "@radix-ui/react-select";
 
 import { ITask } from "../../../@types";
-import { privateRequest } from "../../../services/api";
+import { api, privateRequest } from "../../../services/api";
 import Alert from "../Alert/Alert";
 import Button from "../Button/Button";
 import SelectItem from "../Select/SelectItem";
@@ -25,7 +25,14 @@ interface Task {
 }
 
 function addTask(task: Task): Promise<void> {
-  return privateRequest.post("/task/add", task);
+  const token = localStorage.getItem("userToken");
+
+  const opt = {
+    headers: {
+      authorization: `Bearer ${JSON.parse(token!)}`,
+    },
+  };
+  return api.post("/task/add", task, opt);
 }
 
 const CreateAndEditModal = ({ isEditMode, isOpen, onShow }: Props) => {

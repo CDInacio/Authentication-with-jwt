@@ -21,5 +21,6 @@ input:focus {
 }
 
 body {
+  overflow-x: hidden;
   background: #212121;
 }

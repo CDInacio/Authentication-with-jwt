@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { api } from '../services/api';
+import { privateRequest } from '../services/api';
 
 interface Props {
   key: string
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const getTasksByStatus = async ({ status }: { status: string }) => {
-  const response = await api.get("/task?status=" + status);
+  const response = await privateRequest.get("/task?status=" + status);
   return response.data;
 }
 

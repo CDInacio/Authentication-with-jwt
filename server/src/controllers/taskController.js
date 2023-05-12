@@ -9,7 +9,7 @@ export class TaskController {
   }
 
   async postTask(req, res) {
-    console.log(req.body);
+    console.log(req.user);
     const { title, description, status } = req.body;
     let newTask = await Task.create({
       author: req.user.id,
